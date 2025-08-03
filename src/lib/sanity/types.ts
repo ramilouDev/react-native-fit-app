@@ -186,13 +186,65 @@ export type AllSanitySchemaTypes = Workout | Exercise | SanityImagePaletteSwatch
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ../src/app/(app)/(tabs)/exercises.tsx
 // Variable: exerciseQuery
-// Query: *[_type == "Exercise"] { _id, name, description, image, difficulty }
-export type ExerciseQueryResult = Array<never>;
+// Query: *[_type == "exercise"]{...}
+export type ExerciseQueryResult = Array<{
+  _id: string;
+  _type: "exercise";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  description?: string;
+  difficulty?: "advanced" | "beginner" | "intermediate";
+  Image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  videoUrl?: string;
+  isActive?: boolean;
+}>;
+
+// Source: ../src/app/(app)/exercise-detail.tsx
+// Variable: singleExerciseQuery
+// Query: *[_type == "exercise" && _id == $id][0]
+export type SingleExerciseQueryResult = {
+  _id: string;
+  _type: "exercise";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  description?: string;
+  difficulty?: "advanced" | "beginner" | "intermediate";
+  Image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  videoUrl?: string;
+  isActive?: boolean;
+} | null;
 
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "*[_type == \"Exercise\"] { _id, name, description, image, difficulty }": ExerciseQueryResult;
+    "*[_type == \"exercise\"]{...}": ExerciseQueryResult;
+    "*[_type == \"exercise\" && _id == $id][0]": SingleExerciseQueryResult;
   }
 }

@@ -4,7 +4,7 @@ import { ActivityIndicator, View } from "react-native";
 
 function Layout() {
   const { isLoaded, isSignedIn, userId, sessionId, getToken } = useAuth();
-
+  console.log(isSignedIn)
   if (!isLoaded) {
     return (
       <View className="flex-1 items-center justify-center">

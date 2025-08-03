@@ -3,34 +3,8 @@ import React from "react";
 import { Exercise } from "@/lib/sanity/types";
 import { urlfor } from "@/lib/sanity/client";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { getDifficultyColor, getDifficultyText } from "../utils/exercise-utils";
 
-const getDifficultyColor = (difficulty: string) => {
-  difficulty = difficulty.toLowerCase();
-  switch (difficulty) {
-    case "beginner":
-      return "bg-green-500";
-    case "intermediate":
-      return "bg-yellow-500";
-    case "advanced":
-      return "bg-red-500";
-    default:
-      return "bg-gray-500";
-  }
-};
-
-const getDifficultyText = (difficulty: string) => {
-  difficulty = difficulty.toLowerCase();
-  switch (difficulty) {
-    case "beginner":
-      return "Beginner";
-    case "intermediate":
-      return "Intermediate";
-    case "advanced":
-      return "Advanced";
-    default:
-      return "Unknown";
-  }
-};
 
 interface ExerciseCardProps {
   item: Exercise;
@@ -43,7 +17,7 @@ export default function ExerciseCard({
   onPress,
   showChevron = true,
 }: ExerciseCardProps) {
-  /* console.log(JSON.stringify(item, null, 2)) */
+
   return (
     <TouchableOpacity
       className="bg-white rounded-2xl mb-4 shadow-sm border border-gray-100"

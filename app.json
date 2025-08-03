@@ -2,9 +2,20 @@
   "expo": {
     "android": {
       "softwareKeyboardLayoutMode": "pan",
-      "package": "com.anonymous.fitapp"
+      "package": "com.anonymous.fitapp",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
-    "scheme": "acme",
+    "scheme": "fit-app",
     "userInterfaceStyle": "automatic",
     "orientation": "default",
     "web": {
@@ -16,9 +27,19 @@
         {
           "origin": "https://n"
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "name": "fit-app",
-    "slug": "fit-app"
+    "slug": "fit-app",
+    "extra": {
+      "router": {
+        "origin": "https://n"
+      },
+      "eas": {
+        "projectId": "b7d8cb1e-2ecf-49f3-978e-27db21436599"
+      }
+    },
+    "owner": "ramirami"
   }
 }

@@ -2,8 +2,9 @@ import React, { useCallback, useEffect } from "react";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import { useSSO } from "@clerk/clerk-expo";
-import { View, Button, TouchableOpacity, Text } from "react-native";
+import { View, Button, TouchableOpacity, Text, Alert } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { router } from "expo-router";
 
 export const useWarmUpBrowser = () => {
   useEffect(() => {
@@ -28,29 +29,61 @@ export default function GoogleSignIn() {
 
   const onPress = useCallback(async () => {
     try {
+      console.log("🚀 Iniciando flujo de autenticación...");
+      
+      // Para desarrollo, usar el redirect URI apropiado
+      const redirectUri = __DEV__ 
+        ? AuthSession.makeRedirectUri() // Expo development
+        : AuthSession.makeRedirectUri({ scheme: "fit-app" }); // Production
+      
+      console.log("📱 Redirect URI:", redirectUri);
+      console.log("🔧 Environment:", __DEV__ ? "Development" : "Production");
+      
       // Start the authentication process by calling `startSSOFlow()`
       const { createdSessionId, setActive, signIn, signUp } =
         await startSSOFlow({
           strategy: "oauth_google",
-          // For web, defaults to current path
-          // For native, you must pass a scheme, like AuthSession.makeRedirectUri({ scheme, path })
-          // For more info, see https://docs.expo.dev/versions/latest/sdk/auth-session/#authsessionmakeredirecturioptions
-          redirectUrl: AuthSession.makeRedirectUri(),
+          redirectUrl: redirectUri
         });
-
+      
+      console.log("✅ Flujo completado:", { createdSessionId, signIn, signUp });
+      
       // If sign in was successful, set the active session
       if (createdSessionId) {
-        setActive!({ session: createdSessionId });
+        console.log("🎉 Sesión creada exitosamente:", createdSessionId);
+        await setActive!({ session: createdSessionId });
+        console.log("✅ Sesión establecida como activa");
+        
+        // Force navigation to the authenticated area
+        router.replace("/(app)/(tabs)/");
       } else {
+        console.log("⚠️ No se creó sesión, verificando signIn/signUp...");
+        
         // If there is no `createdSessionId`,
         // there are missing requirements, such as MFA
-        // Use the `signIn` or `signUp` returned from `startSSOFlow`
-        // to handle next steps
+        if (signIn) {
+          console.log("🔐 SignIn disponible:", signIn);
+          // Handle additional sign-in steps if needed
+        }
+        
+        if (signUp) {
+          console.log("📝 SignUp disponible:", signUp);
+          // Handle additional sign-up steps if needed
+        }
+        
+        Alert.alert(
+          "Autenticación pendiente",
+          "Se requieren pasos adicionales para completar la autenticación."
+        );
       }
-    } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+    } catch (err: any) {
+      console.error("❌ Error en autenticación:", err);
+      console.error("❌ Error detallado:", JSON.stringify(err, null, 2));
+      
+      Alert.alert(
+        "Error de autenticación", 
+        err.message || "Ocurrió un error durante la autenticación"
+      );
     }
   }, []);
 
